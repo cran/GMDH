@@ -1,0 +1,4 @@
+export(fcast)
+importFrom(MASS, ginv)
+exportMethods(GMDH, fcast, cancer)
+

@@ -1,0 +1,15 @@
+Package: GMDH
+Type: Package
+Title: Predicting and Forecasting Time Series via GMDH-Type Neural
+        Network Algorithms
+Version: 1.0
+Date: 2014-11-25
+Depends: MASS, stats
+Author: Osman Dag, Ceylan Yozgatligil
+Maintainer: Osman Dag <osman.dag@hacettepe.edu.tr>
+Description: Group method of data handling (GMDH) - type neural network algorithm is the heuristic self-organization method for modelling the complex systems. In this package, GMDH-type neural network algorithms are applied to predict and forecast a univariate time series. 
+License: GPL (>= 2)
+Packaged: 2014-11-25 19:14:40 UTC; osmndg
+NeedsCompilation: no
+Repository: CRAN
+Date/Publication: 2014-11-26 00:48:49
