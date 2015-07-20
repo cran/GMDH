@@ -28,7 +28,7 @@ Wei, W. W.S. (2006). \emph{Time Series Analysis: Univariate and Multivariate Met
 \examples{
 data(cancer)
 plot(cancer)
-out = fcast(cancer, f.number = 5)
+out = fcast(cancer, f.number = 2)
 out$forecasts
 }
 \keyword{datasets}

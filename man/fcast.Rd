@@ -8,8 +8,9 @@ A Function to Predict and Forecast Time Series via GMDH-Type Neural Network Algo
 \code{fcast} predicts and forecasts time series via GMDH-type neural network algorithms.
 }
 
-\usage{fcast(data, method = "GMDH", input = 4, layer = 3, f.number = 10, tf = "all", 
-plotit = TRUE)}
+\usage{fcast(data, method = "GMDH", input = 4, layer = 3, f.number = 5, tf = "all", 
+plotit = TRUE, weigth = 0.7,lambda = c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,
+1.28,2.56,5.12,10.24))}
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,6 +21,8 @@ plotit = TRUE)}
   \item{f.number}{is the number of observations to be forecasted. Defaults f.number = 10 }
   \item{tf}{expects a character string to choose the desired transfer function to be used in forecasting. To use polynomial function, tf should be set to "polynomial". Similarly, tf should be set to "sigmoid", "RBF", "tangent" to utilize sigmoid function, radial basis function and tangent function, respectively. To use all functions simultaneously, default is set to "all"} 
   \item{plotit}{is logical which controls whether historical data with forecasts should be plotted. Defaults plotit = TRUE}
+  \item{weigth}{is the percent of the data set to be utilized as learning set to estimate regularization parameter via cross validation. Default is set to weigth = 0.70}
+  \item{lambda}{is a vector which includes the sequence of feasible regularization parameters. Defaults lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)}
 
 }
 
@@ -50,9 +53,6 @@ Kondo, T., Ueno, J. (2006). Revised GMDH-Type Neural Network Algorithm With A Fe
 Osman Dag, Ceylan Yozgatligil
 }
 
-\note{
-This is the version 1.0 of this user documentation file.
-}
 
 
 \examples{

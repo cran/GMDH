@@ -1,6 +1,6 @@
 
 
-fcast=function(data, method="GMDH", input=4, layer=3, f.number=10, tf="all", plotit=TRUE){
+fcast=function(data, method="GMDH", input=4, layer=3, f.number=5, tf="all", plotit=TRUE, weigth=0.7,lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)){
 
 
 if (tf=="all"){tf_options=c(101:104)
@@ -34,6 +34,56 @@ if (h==104) dat=tan(dataaa*pi/180)
 dat
 
 }
+
+
+cross=function(X, y, lambda=lambda, weigth=weigth){
+
+n=length(y)
+
+n1=round(n*weigth)
+
+n2=n-n1
+
+p=dim(X)[2]
+
+store=NULL
+cost=NULL
+
+Ident=diag(p)
+Ident[1,1]=0
+
+
+X1=X[1:n1,]
+X2=X[(n1+1):n,]
+y1=matrix(y[1:n1],ncol=1)
+y2=y[(n1+1):n]
+
+for (j in 1:length(lambda)){
+
+
+coef=ginv(t(X1)%*%X1+lambda[j]*Ident)%*%t(X1)%*%y1
+
+ypred= t(coef)%*%t(X2)
+
+cost=mean((ypred-y2)^2)
+
+
+store=rbind(store,c(lambda[j],cost))
+cost=NULL
+}
+
+lamb=store[which.min(store[,2]),][1]
+
+
+coef2=ginv(t(X)%*%X+lamb*Ident)%*%t(X)%*%y
+
+
+as.numeric(coef2)
+
+}
+
+
+
 
 
 if (min(data)<=0){
@@ -84,7 +134,7 @@ tfunc=NULL
 tfunc_z=NULL
 for (g in tf_options){
 
-est_coef=t(ginv(t(qq)%*%qq)%*%t(qq)%*%transf(g,yt))
+est_coef=cross(qq,transf(g,yt),lambda=lambda,weigth=weigth)
 
 ee=as.numeric(est_coef)
 
@@ -192,7 +242,7 @@ x=cbind(x,matrix(y[c(-1:-(input-i),-ss:-(ss+1-i))]))
 }
 x=cbind(x,matrix(y[c(-ss:-(ss-input+1))]))
 
-
+ 
 for (k in 1:layer){
 
 w=t(combn(order(idn), 2))
@@ -212,7 +262,7 @@ for (j in 1:nnode){
 if (j<=p){
 qq=cbind(1,x[,w[j,]],x[,w[j,]][,1]*x[,w[j,]][,2],x[,w[j,]]^2)
 }else{
-qq=cbind(x[,m2[j-p,]])
+qq=cbind(1,x[,m2[j-p,]])
 }
 
 
@@ -226,7 +276,7 @@ if (j<=p){
 
 for (g in tf_options){
 
-est_coef=t(ginv(t(qq)%*%qq)%*%t(qq)%*%transf(g,yt))
+est_coef=cross(qq,transf(g,yt),lambda=lambda,weigth=weigth)
 
 ee=as.numeric(est_coef)
 
@@ -240,9 +290,9 @@ tfunc_z=cbind(tfunc_z,matrix(back_transf(g,est_zt)))
 
 for (g in tf_options){
 
-est_coef=t(ginv(t(qq)%*%qq)%*%t(qq)%*%transf(g,yt))
+est_coef=cross(qq,transf(g,yt),lambda=lambda,weigth=weigth)
 
-coef=c(est_coef,rep(0,input-length(est_coef)))
+coef=c(est_coef,rep(0,input+1-length(est_coef)))
 
 ee=as.numeric(est_coef)
 
@@ -261,8 +311,8 @@ if (j<=p){
 z=cbind(z,tfunc_z[,which.min(tfunc[,7])])
 Astore=rbind(Astore,tfunc[which.min(tfunc[,7]),])
 }else{
-z2=cbind(z2,tfunc_z2[,which.min(tfunc2[,(j-p+1)])])
-Astore2=rbind(Astore2,tfunc2[which.min(tfunc2[,(j-p+1)]),])
+z2=cbind(z2,tfunc_z2[,which.min(tfunc2[,(input+2)])])
+Astore2=rbind(Astore2,tfunc2[which.min(tfunc2[,(input+2)]),])
 }
 
 
@@ -273,7 +323,7 @@ Astore2=rbind(Astore2,tfunc2[which.min(tfunc2[,(j-p+1)]),])
 Astore=cbind(Astore,c(1:p))
 Astore2=cbind(Astore2,c((p+1):(p+input)))
 
-checkk=rbind(Astore[,c(7,9)],Astore2[,c((input+1),(input+3))])
+checkk=rbind(Astore[,c(7,9)],Astore2[,c((input+2),(input+4))])
 
 ord=which(checkk[,1]<=sort(checkk[,1])[threshold[k]])
 ord1=ord[which(ord<=p)]
@@ -328,7 +378,7 @@ if (j2<=p){
 qq2=c(1,yt_input[,w2[j2,]],yt_input[,w2[j2,]][1]*yt_input[,w2[j2,]][2],yt_input[,w2[j2,]]^2)
 store_qq2=rbind(store_qq2,qq2)
 }else{
-qq2=c(yt_input[,m2[j2-p,]],rep(0,input-(j2-p)))
+qq2=c(1,yt_input[,m2[j2-p,]],rep(0,input-(j2-p)))
 store_qq5=rbind(store_qq5,qq2)
 }
 
@@ -340,8 +390,8 @@ store_qq5=rbind(store_qq5,qq2)
 selected_qq2=store_qq2[store_Astore[[k2]][,9],]
 selected_coef=store_Astore[[k2]][,1:6]
 
-selected_qq5=store_qq5[store_Astore2[[k2]][,(input+3)]-p,]
-selected_coef5=store_Astore2[[k2]][,1:input]
+selected_qq5=store_qq5[store_Astore2[[k2]][,(input+4)]-p,]
+selected_coef5=store_Astore2[[k2]][,1:(input+1)]
 
 
 
@@ -370,7 +420,7 @@ uu1[1,k5]=back_transf(store_Astore[[k2]][k5,8],uu1[1,k5])
 
 if(d2!=0){
 for (k5 in 1:d2){
-uu2[1,k5]=back_transf(store_Astore2[[k2]][k5,(input+2)],uu2[1,k5])
+uu2[1,k5]=back_transf(store_Astore2[[k2]][k5,(input+3)],uu2[1,k5])
 }
 }
 
@@ -391,17 +441,18 @@ forecast_values=tail(y*stt2-stt1,f.number)
 
 MSE=(mean((fitted-data[c(-1:-input)])^2))
 
+start2=start(data)[1]
 
 if(plotit==TRUE){
-plot(ts(c(data,forecast_values)),col="black",ylab="Time Series")  
-abline(v=ss,lty=2)
+plot(ts(c(data,forecast_values),start=start2),col="black",ylab="Time Series")  
+abline(v=start2+ss-1,lty=2)
 }
 
 
 out=list()
-out$fitted=ts(fitted, start=input+1,end=ss)
+out$fitted=ts(fitted, start=start2+input,end=start2+ss-1)
 out$MSE=MSE
-out$forecasts=ts(forecast_values, start=ss+1,end=ss+f.number)
+out$forecasts=ts(forecast_values, start=start2+ss,end=start2+ss-1+f.number)
 
 invisible(out)
 

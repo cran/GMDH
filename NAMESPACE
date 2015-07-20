@@ -1,4 +1,13 @@
 export(fcast)
-importFrom(MASS, ginv)
-exportMethods(GMDH, fcast, cancer)
+importFrom("MASS", ginv)
+importFrom("graphics", abline, plot)
+importFrom("utils", combn, tail)
+importFrom("stats", start, ts)
+
+
+
+
+
+
+
 
