@@ -1,15 +1,15 @@
 Package: GMDH
 Type: Package
 Title: Short Term Forecasting via GMDH-Type Neural Network Algorithms
-Version: 1.2
-Date: 2015-12-28
+Version: 1.3
+Date: 2016-03-07
 Depends: R (>= 3.1.1)
 Imports: MASS, graphics, stats, utils
 Author: Osman Dag, Ceylan Yozgatligil
 Maintainer: Osman Dag <osman.dag@hacettepe.edu.tr>
 Description: Group method of data handling (GMDH) - type neural network algorithm is the heuristic self-organization method for modelling the complex systems. In this package, GMDH-type neural network algorithms are applied to make short term forecasting for a univariate time series. 
 License: GPL (>= 2)
-Packaged: 2015-12-28 14:41:31 UTC; osmandag
+Packaged: 2016-03-07 11:11:36 UTC; osmandag
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2015-12-28 21:57:12
+Date/Publication: 2016-03-07 23:14:58

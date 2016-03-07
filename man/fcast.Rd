@@ -8,8 +8,8 @@ A Function to Make Short Term Forecasting via GMDH-Type Neural Network Algorithm
 \code{fcast} forecasts time series via GMDH-type neural network algorithms.
 }
 
-\usage{fcast(data, method = "GMDH", input = 4, layer = 3, f.number = 5, tf = "all", 
-plotit = TRUE, weigth = 0.7,lambda = c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,
+\usage{fcast(data, method = "GMDH", input = 4, layer = 3, f.number = 5, level = 95,
+tf = "all", weigth = 0.7,lambda = c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,
 1.28,2.56,5.12,10.24))}
 
 %- maybe also 'usage' for other objects documented here.
@@ -19,8 +19,8 @@ plotit = TRUE, weigth = 0.7,lambda = c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,
   \item{input}{is the number of inputs. Defaults input = 4} 
   \item{layer}{is the number of layers. Default is set to layer = 3} 
   \item{f.number}{is the number of observations to be forecasted. Defaults f.number = 5 }
+  \item{level}{confidence level for prediction interval. Default is set to 95.}
   \item{tf}{expects a character string to choose the desired transfer function to be used in forecasting. To use polynomial function, tf should be set to "polynomial". Similarly, tf should be set to "sigmoid", "RBF", "tangent" to utilize sigmoid function, radial basis function and tangent function, respectively. To use all functions simultaneously, default is set to "all"} 
-  \item{plotit}{is logical which controls whether historical data with forecasts should be plotted. Defaults plotit = TRUE}
   \item{weigth}{is the percent of the data set to be utilized as learning set to estimate regularization parameter via cross validation. Default is set to weigth = 0.70}
   \item{lambda}{is a vector which includes the sequence of feasible regularization parameters. Defaults lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)}
 
@@ -33,15 +33,20 @@ plotit = TRUE, weigth = 0.7,lambda = c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,
 
 \value{
 Returns a list containing following elements:
-\item{fitted}{fitted values}
-\item{MSE}{MSE of prediction}
-\item{forecasts}{forecasts }
+\item{method}{the forecasting method as a character string}
+\item{mean}{point forecasts as a time series}
+\item{lower}{lower limits for prediction interval}
+\item{upper}{upper limits for prediction interval}
+\item{level}{confidence level for prediction interval}
+\item{x}{the original time series}
+\item{fitted}{the fitted values}
+\item{residuals}{the residuals of the model. The residuals are fitted minus values minus x}
 
 }
 
 \references{
 
-Dag, O., Yozgatligil, C. (2015). GMDH: An R Package for Short Term Forecasting via GMDH-Type Neural Network Algorithms. Submitted.
+Dag, O., Yozgatligil, C. (2016). GMDH: An R Package for Short Term Forecasting via GMDH-Type Neural Network Algorithms. Submitted.
 
 Ivakhnenko, A. G. (1966). Group Method of Data Handling - A Rival of the Method of Stochastic Approximation. \emph{Soviet Automatic Control}, \bold{13}, 43-71.
 
@@ -62,9 +67,9 @@ out
 
 data = rnorm(100, 10, 1)
 out = fcast(data, input = 6, layer = 2, f.number = 1)
-out$forecasts
+out$mean
 out$fitted
-out$MSE
+out$residuals
 
 }
 

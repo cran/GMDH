@@ -1,7 +1,10 @@
 
 
-fcast=function(data, method="GMDH", input=4, layer=3, f.number=5, tf="all", plotit=TRUE, weigth=0.7,lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)){
+fcast=function(data, method="GMDH", input=4, layer=3, f.number=5, level=95, tf="all", weigth=0.7,lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)){
 
+if(f.number>5) stop("Only five point forecasts are allowed")
+
+if((level>100)|(level<0)) stop("Confidence level has to be in the interval of 0 and 100")
 
 if (tf=="all"){tf_options=c(101:104)
 }else if (tf=="polynomial"){tf_options=c(101)
@@ -214,6 +217,72 @@ y=c(y,yt_input)
 }
 
 fitted=store_z[[layer]][,1]*stt2-stt1
+####################################################
+
+xz=NULL
+x_out2=NULL
+for (i in 1:(ss-input-f.number+1)) {
+xz=rbind(xz,y[(input+f.number-1+i):(i)])
+}
+x_enter=xz[,(f.number+1):(f.number+input)]
+x_out=xz[,1:f.number]
+
+
+
+
+for (hh in 1:(ss-input-f.number+1)){
+
+ykk_input=matrix(x_enter[hh,],nrow=1)
+
+for (h in 1:f.number){
+
+yt_input=matrix((head(ykk_input,input)),nrow=1)
+idn2=c(1:input)
+w2=t(combn(order(idn2), 2))
+
+
+
+for (k2 in 1:layer){
+
+
+selected_coef=selected_qq2=NULL
+store_qq2=NULL
+
+for (j2 in 1:nnode){
+
+qq2=c(1,yt_input[,w2[j2,]],yt_input[,w2[j2,]][1]*yt_input[,w2[j2,]][2],yt_input[,w2[j2,]]^2)
+
+store_qq2=rbind(store_qq2,qq2)
+}
+
+selected_qq2=store_qq2[store_Astore[[k2]][,9],]
+selected_coef=store_Astore[[k2]][,1:6]
+
+
+if (k2==layer){
+selected_qq2=matrix(selected_qq2,nrow=1)
+selected_coef=matrix(selected_coef,nrow=1)
+}
+
+yt_input=matrix(rowSums(selected_qq2*selected_coef),nrow=1)
+
+
+for (k5 in 1:threshold[k2]){
+
+yt_input[1,k5]=back_transf(store_Astore[[k2]][k5,8],yt_input[1,k5])
+}
+
+
+}
+ykk_input=c(yt_input,ykk_input)
+}
+
+x_out2=rbind(x_out2,head(ykk_input,f.number))
+}
+sd_forecast=rev(apply((x_out2*stt2-stt1)-(x_out*stt2-stt1),2,sd))
+
+
+################################################
 
 
 } 
@@ -434,32 +503,129 @@ y=c(y,yt_input)
 
 fitted=cbind(store_z[[layer]],store_z2[[layer]])[,1]*stt2-stt1
 
+##################################
+
+xz=NULL
+x_out2=NULL
+for (i in 1:(ss-input-f.number+1)) {
+xz=rbind(xz,y[(input+f.number-1+i):(i)])
+}
+x_enter=xz[,(f.number+1):(f.number+input)]
+x_out=xz[,1:f.number]
+
+for (hh in 1:(ss-input-f.number+1)){
+
+ykk_input=matrix(x_enter[hh,],nrow=1)
+
+for (h in 1:f.number){
+
+yt_input=matrix((head(ykk_input,input)),nrow=1)
+idn2=c(1:input)
+w2=t(combn(order(idn2), 2))
+
+
+
+for (k2 in 1:layer){
+
+
+selected_coef=selected_qq2=NULL
+store_qq2=NULL
+
+selected_coef5=selected_qq5=NULL
+store_qq5=NULL
+
+
+for (j2 in 1:nnode){
+
+if (j2<=p){
+qq2=c(1,yt_input[,w2[j2,]],yt_input[,w2[j2,]][1]*yt_input[,w2[j2,]][2],yt_input[,w2[j2,]]^2)
+store_qq2=rbind(store_qq2,qq2)
+}else{
+qq2=c(1,yt_input[,m2[j2-p,]],rep(0,input-(j2-p)))
+store_qq5=rbind(store_qq5,qq2)
+}
+
+}
+
+
+
+
+selected_qq2=store_qq2[store_Astore[[k2]][,9],]
+selected_coef=store_Astore[[k2]][,1:6]
+
+selected_qq5=store_qq5[store_Astore2[[k2]][,(input+4)]-p,]
+selected_coef5=store_Astore2[[k2]][,1:(input+1)]
+
+
+
+if (class(selected_qq2)!="matrix"){
+selected_qq2=matrix(selected_qq2,nrow=1)
+selected_coef=matrix(selected_coef,nrow=1)
+}
+
+if (class(selected_qq5)!="matrix"){
+selected_qq5=matrix(selected_qq5,nrow=1)
+selected_coef5=matrix(selected_coef5,nrow=1)
+}
+
+
+uu1=matrix(rowSums(selected_qq2*selected_coef),nrow=1)
+uu2=matrix(rowSums(selected_qq5*selected_coef5),nrow=1)
+
+d1=dim(matrix(rowSums(selected_qq2*selected_coef),nrow=1))[2]
+d2=dim(matrix(rowSums(selected_qq5*selected_coef5),nrow=1))[2]
+
+if(d1!=0){
+for (k5 in 1:d1){
+uu1[1,k5]=back_transf(store_Astore[[k2]][k5,8],uu1[1,k5])
+}
+}
+
+if(d2!=0){
+for (k5 in 1:d2){
+uu2[1,k5]=back_transf(store_Astore2[[k2]][k5,(input+3)],uu2[1,k5])
+}
+}
+
+yt_input=cbind(uu1,uu2)
+
+
+}
+
+ykk_input=c(yt_input,ykk_input)
+}
+x_out2=rbind(x_out2,head(ykk_input,f.number))
+}
+sd_forecast=rev(apply((x_out2*stt2-stt1)-(x_out*stt2-stt1),2,sd))
+
+####################################
 }  
 
 forecast_values=tail(y*stt2-stt1,f.number)
 
 
-MSE=(mean((fitted-data[c(-1:-input)])^2))
-
 start2=start(data)[1]
 
-if(plotit==TRUE){
-plot(ts(c(data,forecast_values),start=start2),col="black",ylab="Time Series")  
-abline(v=start2+ss-1,lty=2)
-}
 
+outtt=cbind(forecast_values, forecast_values-qnorm(1-(1-level/100)/2)*sd_forecast,forecast_values+qnorm(1-(1-level/100)/2)*sd_forecast)
+colnames(outtt)=c("Point Forecast",paste("Lo",level),paste("Hi",level))
+rownames(outtt)=c((start2+ss):(start2+ss-1+f.number))
+
+print(outtt)
 
 out=list()
+out$method=paste(method,"with", "input =",input,"and layer =",layer)
+out$mean=ts(forecast_values, start=start2+ss,end=start2+ss-1+f.number)
+out$lower=ts(forecast_values-qnorm(1-(1-level/100)/2)*sd_forecast, start=start2+ss,end=start2+ss-1+f.number)
+out$upper=ts(forecast_values+qnorm(1-(1-level/100)/2)*sd_forecast, start=start2+ss,end=start2+ss-1+f.number)
+out$level=level
+out$x=ts(data, start=start2,end=start2+ss-1)
+out$residuals=ts(fitted-data[c(-1:-input)], start=start2+input,end=start2+ss-1)
 out$fitted=ts(fitted, start=start2+input,end=start2+ss-1)
-out$MSE=MSE
-out$forecasts=ts(forecast_values, start=start2+ss,end=start2+ss-1+f.number)
 
 invisible(out)
 
-
 }
-
-
 
 
 

@@ -1,8 +1,8 @@
 export(fcast)
 importFrom("MASS", ginv)
-importFrom("graphics", abline, plot)
-importFrom("utils", combn, tail)
-importFrom("stats", start, ts)
+importFrom("graphics", abline)
+importFrom("utils", combn, tail, head)
+importFrom("stats", start, ts, qnorm, sd)
 
 
 
