@@ -85,7 +85,8 @@ as.numeric(coef2)
 
 }
 
-
+f.number2=f.number
+f.number=5
 
 
 
@@ -607,20 +608,20 @@ forecast_values=tail(y*stt2-stt1,f.number)
 start2=start(data)[1]
 
 
-outtt=cbind(forecast_values, forecast_values-qnorm(1-(1-level/100)/2)*sd_forecast,forecast_values+qnorm(1-(1-level/100)/2)*sd_forecast)
+outtt=cbind(forecast_values[1:f.number2], forecast_values[1:f.number2]-qnorm(1-(1-level/100)/2)*sd_forecast[1:f.number2],forecast_values[1:f.number2]+qnorm(1-(1-level/100)/2)*sd_forecast[1:f.number2])
 colnames(outtt)=c("Point Forecast",paste("Lo",level),paste("Hi",level))
-rownames(outtt)=c((start2+ss):(start2+ss-1+f.number))
+rownames(outtt)=c((start2+ss):(start2+ss-1+f.number2))
 
 print(outtt)
 
 out=list()
 out$method=paste(method,"with", "input =",input,"and layer =",layer)
-out$mean=ts(forecast_values, start=start2+ss,end=start2+ss-1+f.number)
-out$lower=ts(forecast_values-qnorm(1-(1-level/100)/2)*sd_forecast, start=start2+ss,end=start2+ss-1+f.number)
-out$upper=ts(forecast_values+qnorm(1-(1-level/100)/2)*sd_forecast, start=start2+ss,end=start2+ss-1+f.number)
+out$mean=ts(forecast_values[1:f.number2], start=start2+ss,end=start2+ss-1+f.number2)
+out$lower=ts(forecast_values[1:f.number2]-qnorm(1-(1-level/100)/2)*sd_forecast[1:f.number2], start=start2+ss,end=start2+ss-1+f.number2)
+out$upper=ts(forecast_values[1:f.number2]+qnorm(1-(1-level/100)/2)*sd_forecast[1:f.number2], start=start2+ss,end=start2+ss-1+f.number2)
 out$level=level
 out$x=ts(data, start=start2,end=start2+ss-1)
-out$residuals=ts(fitted-data[c(-1:-input)], start=start2+input,end=start2+ss-1)
+out$residuals=ts(data[c(-1:-input)]-fitted, start=start2+input,end=start2+ss-1)
 out$fitted=ts(fitted, start=start2+input,end=start2+ss-1)
 
 invisible(out)

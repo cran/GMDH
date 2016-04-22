@@ -19,7 +19,7 @@ tf = "all", weigth = 0.7,lambda = c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,
   \item{input}{is the number of inputs. Defaults input = 4} 
   \item{layer}{is the number of layers. Default is set to layer = 3} 
   \item{f.number}{is the number of observations to be forecasted. Defaults f.number = 5 }
-  \item{level}{confidence level for prediction interval. Default is set to 95.}
+  \item{level}{confidence level for prediction interval. Default is set to 95}
   \item{tf}{expects a character string to choose the desired transfer function to be used in forecasting. To use polynomial function, tf should be set to "polynomial". Similarly, tf should be set to "sigmoid", "RBF", "tangent" to utilize sigmoid function, radial basis function and tangent function, respectively. To use all functions simultaneously, default is set to "all"} 
   \item{weigth}{is the percent of the data set to be utilized as learning set to estimate regularization parameter via cross validation. Default is set to weigth = 0.70}
   \item{lambda}{is a vector which includes the sequence of feasible regularization parameters. Defaults lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)}
@@ -40,7 +40,7 @@ Returns a list containing following elements:
 \item{level}{confidence level for prediction interval}
 \item{x}{the original time series}
 \item{fitted}{the fitted values}
-\item{residuals}{the residuals of the model. The residuals are fitted minus values minus x}
+\item{residuals}{the residuals of the model. The residuals are x minus the fitted values}
 
 }
 
@@ -70,6 +70,8 @@ out = fcast(data, input = 6, layer = 2, f.number = 1)
 out$mean
 out$fitted
 out$residuals
+plot(out$residuals)
+hist(out$residuals)
 
 }
 
