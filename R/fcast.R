@@ -1,6 +1,8 @@
 
 
-fcast=function(data, method="GMDH", input=4, layer=3, f.number=5, level=95, tf="all", weigth=0.7,lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)){
+fcast=function(data, method="GMDH", input=4, layer=3, f.number=5, level=95, tf="all", weight=0.7,lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)){
+
+if(is.ts(data)!=TRUE) stop("Data must be a univariate time series of class ts")
 
 if(f.number>5) stop("Only five point forecasts are allowed")
 
@@ -39,11 +41,11 @@ dat
 }
 
 
-cross=function(X, y, lambda=lambda, weigth=weigth){
+cross=function(X, y, lambda=lambda, weight=weight){
 
 n=length(y)
 
-n1=round(n*weigth)
+n1=round(n*weight)
 
 n2=n-n1
 
@@ -138,7 +140,7 @@ tfunc=NULL
 tfunc_z=NULL
 for (g in tf_options){
 
-est_coef=cross(qq,transf(g,yt),lambda=lambda,weigth=weigth)
+est_coef=cross(qq,transf(g,yt),lambda=lambda,weight=weight)
 
 ee=as.numeric(est_coef)
 
@@ -346,7 +348,7 @@ if (j<=p){
 
 for (g in tf_options){
 
-est_coef=cross(qq,transf(g,yt),lambda=lambda,weigth=weigth)
+est_coef=cross(qq,transf(g,yt),lambda=lambda,weight=weight)
 
 ee=as.numeric(est_coef)
 
@@ -360,7 +362,7 @@ tfunc_z=cbind(tfunc_z,matrix(back_transf(g,est_zt)))
 
 for (g in tf_options){
 
-est_coef=cross(qq,transf(g,yt),lambda=lambda,weigth=weigth)
+est_coef=cross(qq,transf(g,yt),lambda=lambda,weight=weight)
 
 coef=c(est_coef,rep(0,input+1-length(est_coef)))
 

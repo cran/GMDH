@@ -9,19 +9,19 @@ A Function to Make Short Term Forecasting via GMDH-Type Neural Network Algorithm
 }
 
 \usage{fcast(data, method = "GMDH", input = 4, layer = 3, f.number = 5, level = 95,
-tf = "all", weigth = 0.7,lambda = c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,
+tf = "all", weight = 0.7,lambda = c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,
 1.28,2.56,5.12,10.24))}
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{is an univariate time series}
+  \item{data}{is a univariate time series of class ts}
   \item{method}{expects a character string to choose the desired method to forecast time series. To utilize GMDH-type neural network in forecasting, method is set to "GMDH". One should set method to "RGMDH" for forecasting via Revised GMDH-type neural network. Default is set to "GMDH"}
   \item{input}{is the number of inputs. Defaults input = 4} 
   \item{layer}{is the number of layers. Default is set to layer = 3} 
   \item{f.number}{is the number of observations to be forecasted. Defaults f.number = 5 }
   \item{level}{confidence level for prediction interval. Default is set to 95}
   \item{tf}{expects a character string to choose the desired transfer function to be used in forecasting. To use polynomial function, tf should be set to "polynomial". Similarly, tf should be set to "sigmoid", "RBF", "tangent" to utilize sigmoid function, radial basis function and tangent function, respectively. To use all functions simultaneously, default is set to "all"} 
-  \item{weigth}{is the percent of the data set to be utilized as learning set to estimate regularization parameter via cross validation. Default is set to weigth = 0.70}
+  \item{weight}{is the percent of the data set to be utilized as learning set to estimate regularization parameter via cross validation. Default is set to weight = 0.70}
   \item{lambda}{is a vector which includes the sequence of feasible regularization parameters. Defaults lambda=c(0,0.01,0.02,0.04,0.08,0.16,0.32,0.64,1.28,2.56,5.12,10.24)}
 
 }
@@ -61,11 +61,11 @@ Osman Dag, Ceylan Yozgatligil
 
 
 \examples{
-data = rnorm(100, 10, 1)
+data = ts(rnorm(100, 10, 1))
 out = fcast(data)
 out
 
-data = rnorm(100, 10, 1)
+data = ts(rnorm(100, 10, 1))
 out = fcast(data, input = 6, layer = 2, f.number = 1)
 out$mean
 out$fitted

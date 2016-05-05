@@ -1,7 +1,7 @@
-b44dd3d5d686959f80ec2e531ad8cfb4 *DESCRIPTION
-9d4305a92e80e4b1c773e4d1b662189f *NAMESPACE
-482ee6a9ae1def1cfbbc4f2d842bd1b8 *R/fcast.R
+9d705f43f3708ead05752c70e4e80a5b *DESCRIPTION
+250cd0c1d6f435d52b2bcd9fe794656c *NAMESPACE
+8da5e8c981d9e3a5ab17f19a5f0f7251 *R/fcast.R
 e57d99b48b0ede5826289e19c3ddeaa9 *data/cancer.rda
-89345ddfb275df602a7ee960ba16491d *man/GMDH.Rd
+7abda4db2259c63f6a7eba6f577ef1d2 *man/GMDH.Rd
 f9b9d7d8170b5b7484992b491f93541c *man/cancer.Rd
-ef93ea6ed503e5bf44d7fd0475ef0bd9 *man/fcast.Rd
+baea6fea306b22b6f5854753802a5c1a *man/fcast.Rd
