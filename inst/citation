@@ -1,0 +1,17 @@
+citHeader("To cite GMDH in publications use:")
+
+citEntry(entry="article",
+  title  = "GMDH: An R Package for Short Term Forecasting via GMDH-Type Neural Network Algorithms.",
+  author = personList(as.person("O. Dag"), 
+			     as.person("C. Yozgatligil")),
+  journal = "The R Journal",
+  year = "2016",
+  volume = "8",
+  number = "1",
+  pages = "379-386",
+  url = "https://journal.r-project.org/archive/2016-1/yozgatligil-dag.pdf",
+  textVersion = paste("Dag, O., Yozgatligil, C. (2016).",
+                      "GMDH: An R Package for Short Term Forecasting via GMDH-Type Neural Network Algorithms.",
+                      "The R Journal,  8:1, 379-386."))
+
+

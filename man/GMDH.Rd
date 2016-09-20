@@ -12,8 +12,8 @@ Package GMDH includes a function for short term forecasting of a univariate time
 \tabular{ll}{
 Package: \tab GMDH\cr
 Type: \tab Package\cr
-Version: \tab 1.5\cr
-Date: \tab 2016-05-05\cr
+Version: \tab 1.6\cr
+Date: \tab 2016-09-20\cr
 License: \tab GPL (>=2)\cr
 }
 }
